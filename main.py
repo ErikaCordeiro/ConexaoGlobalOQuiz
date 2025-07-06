@@ -64,7 +64,7 @@ def quiz():
 def responder():
     num = int(request.form["num"]) - 1
     resposta = request.form["resposta"]
-    nome = request.form["nome"]  # Corrigido: vem do formulário
+    nome = request.form["nome"]
     pontos = int(request.args.get("pontos", 0))
 
     pergunta = perguntas[num]
@@ -79,20 +79,14 @@ def responder():
 @app.route("/resultado")
 def resultado():
     nome = request.args.get("nome")
-    pontos = int(request.args.get("pontos", 0))  # Garantir que o valor de pontos seja válido
+    pontos = int(request.args.get("pontos", 0))
 
-    # Verificar se a variável pontos está corretamente definida
-    if pontos is None:
-        pontos = 0  # Se for None, atribuímos 0 (valor padrão)
-
-    # Salvar no ranking
     conn = sqlite3.connect("quiz.db")
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO ranking (nome, pontuacao) VALUES (?, ?)", (nome, pontos))  # Corrigido o nome da coluna
+    cursor.execute("INSERT INTO ranking (nome, pontuacao) VALUES (?, ?)", (nome, pontos))
     conn.commit()
 
-    # Top 10
-    cursor.execute("SELECT nome, pontuacao FROM ranking ORDER BY pontuacao DESC, id ASC LIMIT 10")  # Corrigido o nome da coluna
+    cursor.execute("SELECT nome, pontuacao FROM ranking ORDER BY pontuacao DESC, id ASC LIMIT 10")
     ranking = cursor.fetchall()
     conn.close()
 

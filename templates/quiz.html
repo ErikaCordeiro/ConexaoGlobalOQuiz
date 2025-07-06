@@ -53,7 +53,7 @@
     <h1>Olá, {{ nome }}!</h1>
     <p>Pergunta {{ num }} de {{ total }}</p>
 
-    <form method="POST" action="{{ url_for('responder', nome=nome, num=num, pontos=pontos) }}">
+    <form method="POST" action="{{ url_for('responder', pontos=request.args.get('pontos', 0)) }}">
         <h2>{{ pergunta[0] }}</h2>
 
         <!-- Campos ocultos -->
