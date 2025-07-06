@@ -10,31 +10,31 @@
             color: white;
             padding: 20px;
         }
+
         h1 {
             color: #00ff88;
         }
-        .resposta-correta {
-            color: #00ff88;
-        }
-        .resposta-incorreta {
-            color: red;
-        }
+
         .ranking {
             margin-top: 40px;
             text-align: center;
         }
+
         .ranking h2 {
             color: #00ff88;
         }
+
         .ranking ol {
             padding-left: 0;
             list-style-position: inside;
         }
+
         a {
             color: #00ff88;
             text-decoration: none;
             font-weight: bold;
         }
+
         a:hover {
             text-decoration: underline;
         }
@@ -44,21 +44,6 @@
 
     <h1>Resultado final</h1>
     <p>Você acertou {{ pontuacao }} de {{ total_perguntas }} perguntas.</p>
-
-    <ul>
-        {% for item in respostas %}
-            <li>
-                <strong>{{ item.pergunta }}</strong><br>
-                Sua resposta: {{ item.resposta }}<br>
-                {% if item.correta %}
-                    <span class="resposta-correta">✔ Acertou!</span>
-                {% else %}
-                    <span class="resposta-incorreta">✘ Errou!</span><br>
-                    Resposta correta: {{ item.resposta_correta }}
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
 
     <div class="ranking">
         <h2>Ranking - Top 10</h2>

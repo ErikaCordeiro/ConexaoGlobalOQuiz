@@ -17,7 +17,7 @@ def criar_tabela():
     conn.commit()
     conn.close()
 
-# Perguntas fixas (somente alternativas)
+# Perguntas fixas (10 perguntas completas)
 perguntas = [
     ("Qual a capital do Brasil?",
      "a) São Paulo", "b) Brasília", "c) Rio de Janeiro", "d) Belo Horizonte"),
@@ -50,15 +50,18 @@ perguntas = [
      "a) Machado de Assis", "b) José de Alencar", "c) Lima Barreto", "d) Clarice Lispector"),
 ]
 
+# Rota inicial
 @app.route("/", methods=["GET"])
 def index():
     return render_template("index.html")
 
+# Iniciar quiz
 @app.route("/iniciar", methods=["POST"])
 def iniciar_quiz():
     nome = request.form["nome"]
     return redirect(url_for("quiz", nome=nome, num=0, pontos=0))
 
+# Rota das perguntas
 @app.route("/quiz")
 def quiz():
     nome = request.args.get("nome")
@@ -74,39 +77,46 @@ def quiz():
     else:
         return redirect(url_for("resultado", nome=nome, pontos=pontos))
 
+# Processar resposta
 @app.route("/responder", methods=["POST"])
 def responder():
     num = int(request.form["num"]) - 1
     resposta = request.form["resposta"]
-    nome = request.args.get("nome")
+    nome = request.form["nome"]  # Corrigido: vem do formulário
     pontos = int(request.args.get("pontos", 0))
 
-    correta = perguntas[num][5]
+    pergunta = perguntas[num]
+    correta = pergunta[5]
+
     if resposta == correta:
         pontos += 1
 
     return redirect(url_for("quiz", nome=nome, num=num + 1, pontos=pontos))
 
+# Resultado final
 @app.route("/resultado")
 def resultado():
     nome = request.args.get("nome")
     pontos = int(request.args.get("pontos"))
 
+    # Salvar no ranking
     conn = sqlite3.connect("quiz.db")
     cursor = conn.cursor()
     cursor.execute("INSERT INTO ranking (nome, pontos) VALUES (?, ?)", (nome, pontos))
     conn.commit()
 
+    # Top 10
     cursor.execute("SELECT nome, pontos FROM ranking ORDER BY pontos DESC, id ASC LIMIT 10")
     ranking = cursor.fetchall()
     conn.close()
 
-    return render_template("resultado.html",
-                           pontuacao=pontos,
+    return render_template("resultado.html", pontuacao=pontos,
                            total_perguntas=len(perguntas),
                            ranking=ranking)
 
+# Inicializa o banco ao importar o app
 criar_tabela()
 
+# Roda o app localmente
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

@@ -10,18 +10,23 @@
             color: white;
             padding: 20px;
         }
+
         h1 {
             color: #00ff88;
         }
+
         h2 {
             margin-top: 30px;
         }
+
         p {
             font-size: 1.1em;
         }
+
         form {
             margin-top: 20px;
         }
+
         label {
             display: block;
             margin-bottom: 10px;
@@ -30,9 +35,11 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
         input[type="radio"] {
             margin-right: 10px;
         }
+
         input[type="submit"] {
             background-color: #00ff88;
             color: black;
@@ -43,6 +50,7 @@
             font-weight: bold;
             border-radius: 5px;
         }
+
         input[type="submit"]:hover {
             background-color: #00cc66;
         }
@@ -53,14 +61,13 @@
     <h1>Olá, {{ nome }}!</h1>
     <p>Pergunta {{ num }} de {{ total }}</p>
 
-    <form method="POST" action="{{ url_for('responder') }}">
-        <!-- Correto: o enunciado é o índice 0 -->
+    <form method="POST" action="{{ url_for('responder', pontos=request.args.get('pontos', 0)) }}">
         <h2>{{ pergunta[0] }}</h2>
 
-        <!-- Campo oculto para saber o número da pergunta -->
+        <!-- Campos ocultos -->
         <input type="hidden" name="num" value="{{ num }}">
+        <input type="hidden" name="nome" value="{{ nome }}">
 
-        <!-- Alternativas -->
         <label>
             <input type="radio" name="resposta" value="a" required>
             {{ pergunta[1] }}
