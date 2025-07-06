@@ -1,16 +1,11 @@
-import os
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 
 app = Flask(__name__)
 
-# Caminho absoluto do banco
-basedir = os.path.abspath(os.path.dirname(__file__))
-db_path = os.path.join(basedir, "quiz.db")
-
 # Banco de dados
 def criar_tabela():
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect("quiz.db")
     cursor = conn.cursor()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS ranking (
@@ -22,7 +17,7 @@ def criar_tabela():
     conn.commit()
     conn.close()
 
-# Perguntas
+# Perguntas fixas
 perguntas = [
     ("Qual a capital do Brasil?", "São Paulo", "Brasília", "Rio de Janeiro", "Belo Horizonte", "b"),
     ("Qual é o maior planeta do sistema solar?", "Terra", "Marte", "Júpiter", "Saturno", "c"),
@@ -79,7 +74,7 @@ def resultado():
     pontos = int(request.args.get("pontos"))
 
     # Salvar no ranking
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect("quiz.db")
     cursor = conn.cursor()
     cursor.execute("INSERT INTO ranking (nome, pontos) VALUES (?, ?)", (nome, pontos))
     conn.commit()
@@ -89,22 +84,18 @@ def resultado():
     ranking = cursor.fetchall()
     conn.close()
 
-    # Resumo (aqui ainda não recebemos respostas por GET, mas deixamos preparado)
+    # Lista com todas as respostas e corretas (exemplo estático, pois resposta individual não foi salva)
     respostas = []
     for i, p in enumerate(perguntas):
         respostas.append({
             "pergunta": p[0],
-            "resposta": "-",  # vazio porque não armazenamos por pergunta
-            "correta": "-",   # idem
-            "resposta_correta": p[{"a": 2, "b": 3, "c": 4, "d": 5}[p[5]]]
+            "resposta": "Resposta do usuário",  # precisa ajustar se quiser salvar
+            "correta": False,
+            "resposta_correta": p[{"a": 1, "b": 2, "c": 3, "d": 4}[p[5]]]
         })
 
     return render_template("resultado.html", pontuacao=pontos, total_perguntas=len(perguntas),
                            respostas=respostas, ranking=ranking)
 
-# Inicializa o banco
+# Inicializa o banco ao importar o app
 criar_tabela()
-
-# Roda localmente se não for no Render
-if __name__ == "__main__":
-    app.run(debug=True)
