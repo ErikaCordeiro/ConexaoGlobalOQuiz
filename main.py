@@ -17,6 +17,17 @@ def criar_tabela():
     conn.commit()
     conn.close()
 
+# Função para adicionar a coluna 'pontos' caso não exista
+def adicionar_coluna_pontos():
+    conn = sqlite3.connect("quiz.db")
+    cursor = conn.cursor()
+    try:
+        cursor.execute("ALTER TABLE ranking ADD COLUMN pontos INTEGER")
+        conn.commit()
+    except sqlite3.OperationalError:
+        pass  # A coluna já existe
+    conn.close()
+
 # Perguntas fixas (10 perguntas completas)
 perguntas = [
     ("Qual a capital do Brasil?", "a) São Paulo", "b) Brasília", "c) Rio de Janeiro", "d) Belo Horizonte"),
@@ -99,6 +110,7 @@ def resultado():
 
 # Inicializa o banco ao importar o app
 criar_tabela()
+adicionar_coluna_pontos()
 
 # Roda o app localmente
 if __name__ == "__main__":
