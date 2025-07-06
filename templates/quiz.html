@@ -54,26 +54,28 @@
     <p>Pergunta {{ num }} de {{ total }}</p>
 
     <form method="POST" action="{{ url_for('responder') }}">
-        <h2>{{ pergunta[1] }}</h2>
+        <!-- Correto: o enunciado é o índice 0 -->
+        <h2>{{ pergunta[0] }}</h2>
 
         <!-- Campo oculto para saber o número da pergunta -->
         <input type="hidden" name="num" value="{{ num }}">
 
+        <!-- Alternativas -->
         <label>
             <input type="radio" name="resposta" value="a" required>
-            {{ pergunta[2] }}
+            {{ pergunta[1] }}
         </label>
         <label>
             <input type="radio" name="resposta" value="b">
-            {{ pergunta[3] }}
+            {{ pergunta[2] }}
         </label>
         <label>
             <input type="radio" name="resposta" value="c">
-            {{ pergunta[4] }}
+            {{ pergunta[3] }}
         </label>
         <label>
             <input type="radio" name="resposta" value="d">
-            {{ pergunta[5] }}
+            {{ pergunta[4] }}
         </label>
 
         <input type="submit" value="Enviar">
