@@ -103,3 +103,6 @@ criar_tabela()
 # Roda o app localmente
 if __name__ == "__main__":
     app.run()
+
+# Forçando redeploy para reconhecer o Procfile
+
