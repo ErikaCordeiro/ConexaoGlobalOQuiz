@@ -112,10 +112,11 @@ def responder():
     nome = request.form["nome"]
     pontos = int(request.args.get("pontos", 0))  # Garantir que pontos sempre seja um valor inteiro
 
+    # Verifique se a resposta está correta
     correta = respostas_corretas[num]  # Obtemos a resposta correta
-
+    
     if resposta == correta:
-        pontos += 1
+        pontos += 1  # Incrementa a pontuação se a resposta estiver correta
 
     return redirect(url_for("quiz", nome=nome, num=num + 1, pontos=pontos))
 
