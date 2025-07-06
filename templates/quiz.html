@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e2f3f;
+            color: white;
+            padding: 20px;
+        }
+        h1 {
+            color: #00ff88;
+        }
+        h2 {
+            margin-top: 30px;
+        }
+        p {
+            font-size: 1.1em;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #2a3f55;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        input[type="submit"] {
+            background-color: #00ff88;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        input[type="submit"]:hover {
+            background-color: #00cc66;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Olá, {{ nome }}!</h1>
+    <p>Pergunta {{ num }} de {{ total }}</p>
+
+    <form method="POST" action="{{ url_for('responder') }}">
+        <h2>{{ pergunta[1] }}</h2>
+
+        <!-- Campo oculto para saber o número da pergunta -->
+        <input type="hidden" name="num" value="{{ num }}">
+
+        <label>
+            <input type="radio" name="resposta" value="a" required>
+            {{ pergunta[2] }}
+        </label>
+        <label>
+            <input type="radio" name="resposta" value="b">
+            {{ pergunta[3] }}
+        </label>
+        <label>
+            <input type="radio" name="resposta" value="c">
+            {{ pergunta[4] }}
+        </label>
+        <label>
+            <input type="radio" name="resposta" value="d">
+            {{ pergunta[5] }}
+        </label>
+
+        <input type="submit" value="Enviar">
+    </form>
+
+</body>
+</html>

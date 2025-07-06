@@ -1,0 +1,135 @@
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+/* Container principal */
+.quiz-container {
+    background: #121212;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 0 15px #0f0;
+    max-width: 700px;
+    width: 100%;
+}
+
+/* Títulos */
+h1, h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #00ff88;
+}
+
+/* Formulário */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Botões */
+button {
+    background-color: #00ff88;
+    color: #000;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: #00cc70;
+}
+
+/* Inputs */
+input[type="text"] {
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #555;
+    width: 100%;
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+/* Alternativas */
+.pergunta-bloco {
+    margin-top: 1rem;
+}
+
+.alternativa {
+    background-color: #1f1f1f;
+    padding: 0.75rem;
+    border-radius: 10px;
+    border: 1px solid #333;
+    display: block;
+    margin-bottom: 0.5rem;
+    transition: background 0.2s;
+}
+
+.alternativa:hover {
+    background-color: #2e2e2e;
+}
+
+input[type="radio"] {
+    margin-right: 10px;
+}
+
+/* Tabelas (resultado e ranking) */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #333;
+    text-align: center;
+}
+
+th {
+    background-color: #00ff88;
+    color: #000;
+}
+
+.acerto {
+    background-color: #003300;
+    color: #00ff88;
+}
+
+.erro {
+    background-color: #330000;
+    color: #ff6666;
+}
+
+a {
+    color: #00ff88;
+    text-decoration: none;
+    margin-top: 1.5rem;
+    display: inline-block;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
