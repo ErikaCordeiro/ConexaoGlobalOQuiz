@@ -88,11 +88,14 @@ def resultado():
     # Salvar no ranking
     conn = sqlite3.connect("quiz.db")
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO ranking (nome, pontuacao, data) VALUES (?, ?, datetime('now'))", (nome, pontos))  # Agora inclui 'data'
+    cursor.execute("""
+        INSERT INTO ranking (nome, pontuacao, data) 
+        VALUES (?, ?, datetime('now', 'localtime'))
+    """, (nome, pontos))  # Inserir a data atual diretamente
     conn.commit()
 
     # Top 10
-    cursor.execute("SELECT nome, pontuacao FROM ranking ORDER BY pontuacao DESC, id ASC LIMIT 10")
+    cursor.execute("SELECT nome, pontuacao FROM ranking ORDER BY pontuacao DESC, id ASC LIMIT 10")  # Corrigido o nome da coluna
     ranking = cursor.fetchall()
     conn.close()
 
