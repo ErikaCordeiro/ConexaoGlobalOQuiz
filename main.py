@@ -66,17 +66,15 @@ def get_perguntas():
     conn.close()
     return perguntas
 
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET", "POST"])
 def index():
+    if request.method == "POST":
+        nome = request.form.get("nome")
+        session["nome"] = nome
+        session["pontuacao"] = 0
+        session["respostas_usuario"] = []
+        return redirect(url_for("quiz", num=1))
     return render_template("index.html")
-
-@app.route("/", methods=["POST"])
-def iniciar_quiz():
-    nome = request.form.get("nome")
-    session["nome"] = nome
-    session["pontuacao"] = 0
-    session["respostas_usuario"] = []
-    return redirect(url_for("quiz", num=1))
 
 @app.route("/quiz/<int:num>")
 def quiz(num):
@@ -174,5 +172,4 @@ def zerar_ranking():
     conn.close()
     return "✅ Ranking zerado com sucesso!"
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# Removido o app.run(debug=True) pois não é necessário com gunicorn
