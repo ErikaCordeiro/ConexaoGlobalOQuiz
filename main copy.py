@@ -18,16 +18,6 @@ def criar_tabela():
     conn.commit()
     conn.close()
 
-# Zerando o ranking
-@app.route("/zerar-ranking", methods=["GET"])
-def zerar_ranking():
-    conn = sqlite3.connect("quiz.db")
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM ranking")  # Deleta todos os registros da tabela ranking
-    conn.commit()
-    conn.close()
-    return "Ranking zerado com sucesso!", 200
-
 # Perguntas fixas (10 perguntas completas)
 perguntas = [
     ("Qual a capital do Brasil?", "a) São Paulo", "b) Brasília", "c) Rio de Janeiro", "d) Belo Horizonte", "b"),
