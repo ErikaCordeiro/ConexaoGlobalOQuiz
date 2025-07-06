@@ -84,12 +84,12 @@ def resultado():
     ranking = cursor.fetchall()
     conn.close()
 
-    # Lista com todas as respostas e corretas (exemplo estático, pois resposta individual não foi salva)
+    # Lista com todas as respostas e corretas (estático por enquanto)
     respostas = []
     for i, p in enumerate(perguntas):
         respostas.append({
             "pergunta": p[0],
-            "resposta": "Resposta do usuário",  # precisa ajustar se quiser salvar
+            "resposta": "Resposta do usuário",  # você pode implementar para salvar isso depois
             "correta": False,
             "resposta_correta": p[{"a": 1, "b": 2, "c": 3, "d": 4}[p[5]]]
         })
@@ -99,3 +99,7 @@ def resultado():
 
 # Inicializa o banco ao importar o app
 criar_tabela()
+
+# Roda o app localmente
+if __name__ == "__main__":
+    app.run()
