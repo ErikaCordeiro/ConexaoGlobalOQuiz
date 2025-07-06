@@ -19,36 +19,20 @@ def criar_tabela():
 
 # Perguntas fixas (10 perguntas completas)
 perguntas = [
-    ("Qual a capital do Brasil?",
-     "a) São Paulo", "b) Brasília", "c) Rio de Janeiro", "d) Belo Horizonte"),
-
-    ("Quem foi o primeiro presidente do Brasil?",
-     "a) Marechal Deodoro da Fonseca", "b) Getúlio Vargas", "c) Dom Pedro I", "d) Juscelino Kubitschek"),
-
-    ("Qual é o maior planeta do sistema solar?",
-     "a) Terra", "b) Marte", "c) Júpiter", "d) Saturno"),
-
-    ("Quem pintou a Mona Lisa?",
-     "a) Van Gogh", "b) Leonardo da Vinci", "c) Pablo Picasso", "d) Michelangelo"),
-
-    ("Qual é a fórmula da água?",
-     "a) CO2", "b) H2O", "c) O2", "d) NaCl"),
-
-    ("Em que país está localizada a Torre Eiffel?",
-     "a) Itália", "b) Alemanha", "c) França", "d) Espanha"),
-
-    ("Qual é o maior oceano do mundo?",
-     "a) Atlântico", "b) Índico", "c) Ártico", "d) Pacífico"),
-
-    ("Em que continente fica o Egito?",
-     "a) Ásia", "b) África", "c) Europa", "d) América"),
-
-    ("Qual é a moeda oficial dos Estados Unidos?",
-     "a) Euro", "b) Peso", "c) Dólar", "d) Libra"),
-
-    ("Quem escreveu 'Dom Casmurro'?",
-     "a) Machado de Assis", "b) José de Alencar", "c) Lima Barreto", "d) Clarice Lispector"),
+    ("Qual a capital do Brasil?", "a) São Paulo", "b) Brasília", "c) Rio de Janeiro", "d) Belo Horizonte"),
+    ("Quem foi o primeiro presidente do Brasil?", "a) Marechal Deodoro da Fonseca", "b) Getúlio Vargas", "c) Dom Pedro I", "d) Juscelino Kubitschek"),
+    ("Qual é o maior planeta do sistema solar?", "a) Terra", "b) Marte", "c) Júpiter", "d) Saturno"),
+    ("Quem pintou a Mona Lisa?", "a) Van Gogh", "b) Leonardo da Vinci", "c) Pablo Picasso", "d) Michelangelo"),
+    ("Qual é a fórmula da água?", "a) CO2", "b) H2O", "c) O2", "d) NaCl"),
+    ("Em que país está localizada a Torre Eiffel?", "a) Itália", "b) Alemanha", "c) França", "d) Espanha"),
+    ("Qual é o maior oceano do mundo?", "a) Atlântico", "b) Índico", "c) Ártico", "d) Pacífico"),
+    ("Em que continente fica o Egito?", "a) Ásia", "b) África", "c) Europa", "d) América"),
+    ("Qual é a moeda oficial dos Estados Unidos?", "a) Euro", "b) Peso", "c) Dólar", "d) Libra"),
+    ("Quem escreveu 'Dom Casmurro'?", "a) Machado de Assis", "b) José de Alencar", "c) Lima Barreto", "d) Clarice Lispector"),
 ]
+
+# Respostas corretas (usando o índice da alternativa)
+respostas_corretas = ['b', 'a', 'c', 'b', 'b', 'c', 'd', 'b', 'c', 'a']
 
 # Rota inicial
 @app.route("/", methods=["GET"])
@@ -80,13 +64,12 @@ def quiz():
 # Processar resposta
 @app.route("/responder", methods=["POST"])
 def responder():
-    num = int(request.form["num"]) - 1
+    num = int(request.form["num"]) - 1  # Ajuste para o índice correto
     resposta = request.form["resposta"]
-    nome = request.form["nome"]  # Corrigido: vem do formulário
+    nome = request.form["nome"]
     pontos = int(request.args.get("pontos", 0))
 
-    pergunta = perguntas[num]
-    correta = pergunta[5]
+    correta = respostas_corretas[num]  # Obtemos a resposta correta
 
     if resposta == correta:
         pontos += 1
