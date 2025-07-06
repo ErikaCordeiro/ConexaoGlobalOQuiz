@@ -53,13 +53,12 @@
     <h1>Olá, {{ nome }}!</h1>
     <p>Pergunta {{ num }} de {{ total }}</p>
 
-    <form method="POST" action="{{ url_for('responder') }}">
+    <form method="POST" action="{{ url_for('responder', pontos=request.args.get('pontos', 0)) }}">
         <h2>{{ pergunta[0] }}</h2>
 
         <!-- Campos ocultos -->
         <input type="hidden" name="num" value="{{ num }}">
         <input type="hidden" name="nome" value="{{ nome }}">
-        <input type="hidden" name="pontos" value="{{ request.args.get('pontos', 0) }}">
 
         <label>
             <input type="radio" name="resposta" value="a" required>

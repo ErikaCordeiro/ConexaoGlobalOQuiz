@@ -11,7 +11,8 @@ def criar_tabela():
     CREATE TABLE IF NOT EXISTS ranking (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
-        pontuacao INTEGER NOT NULL DEFAULT 0
+        pontuacao INTEGER NOT NULL DEFAULT 0,
+        data TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
     )
     """)
     conn.commit()
@@ -19,20 +20,17 @@ def criar_tabela():
 
 # Perguntas fixas (10 perguntas completas)
 perguntas = [
-    ("Qual a capital do Brasil?", "a) São Paulo", "b) Brasília", "c) Rio de Janeiro", "d) Belo Horizonte"),
-    ("Quem foi o primeiro presidente do Brasil?", "a) Marechal Deodoro da Fonseca", "b) Getúlio Vargas", "c) Dom Pedro I", "d) Juscelino Kubitschek"),
-    ("Qual é o maior planeta do sistema solar?", "a) Terra", "b) Marte", "c) Júpiter", "d) Saturno"),
-    ("Quem pintou a Mona Lisa?", "a) Van Gogh", "b) Leonardo da Vinci", "c) Pablo Picasso", "d) Michelangelo"),
-    ("Qual é a fórmula da água?", "a) CO2", "b) H2O", "c) O2", "d) NaCl"),
-    ("Em que país está localizada a Torre Eiffel?", "a) Itália", "b) Alemanha", "c) França", "d) Espanha"),
-    ("Qual é o maior oceano do mundo?", "a) Atlântico", "b) Índico", "c) Ártico", "d) Pacífico"),
-    ("Em que continente fica o Egito?", "a) Ásia", "b) África", "c) Europa", "d) América"),
-    ("Qual é a moeda oficial dos Estados Unidos?", "a) Euro", "b) Peso", "c) Dólar", "d) Libra"),
-    ("Quem escreveu 'Dom Casmurro'?", "a) Machado de Assis", "b) José de Alencar", "c) Lima Barreto", "d) Clarice Lispector"),
+    ("Qual a capital do Brasil?", "a) São Paulo", "b) Brasília", "c) Rio de Janeiro", "d) Belo Horizonte", "b"),
+    ("Quem foi o primeiro presidente do Brasil?", "a) Marechal Deodoro da Fonseca", "b) Getúlio Vargas", "c) Dom Pedro I", "d) Juscelino Kubitschek", "a"),
+    ("Qual é o maior planeta do sistema solar?", "a) Terra", "b) Marte", "c) Júpiter", "d) Saturno", "c"),
+    ("Quem pintou a Mona Lisa?", "a) Van Gogh", "b) Leonardo da Vinci", "c) Pablo Picasso", "d) Michelangelo", "b"),
+    ("Qual é a fórmula da água?", "a) CO2", "b) H2O", "c) O2", "d) NaCl", "b"),
+    ("Em que país está localizada a Torre Eiffel?", "a) Itália", "b) Alemanha", "c) França", "d) Espanha", "c"),
+    ("Qual é o maior oceano do mundo?", "a) Atlântico", "b) Índico", "c) Ártico", "d) Pacífico", "d"),
+    ("Em que continente fica o Egito?", "a) Ásia", "b) África", "c) Europa", "d) América", "b"),
+    ("Qual é a moeda oficial dos Estados Unidos?", "a) Euro", "b) Peso", "c) Dólar", "d) Libra", "c"),
+    ("Quem escreveu 'Dom Casmurro'?", "a) Machado de Assis", "b) José de Alencar", "c) Lima Barreto", "d) Clarice Lispector", "a"),
 ]
-
-# Respostas corretas (usando o índice da alternativa)
-respostas_corretas = ['b', 'a', 'c', 'b', 'b', 'c', 'd', 'b', 'c', 'a']
 
 # Rota inicial
 @app.route("/", methods=["GET"])
@@ -50,7 +48,7 @@ def iniciar_quiz():
 def quiz():
     nome = request.args.get("nome")
     num = int(request.args.get("num"))
-    pontos = int(request.args.get("pontos", 0))  # Garantir que pontos seja um valor inteiro
+    pontos = int(request.args.get("pontos"))
 
     if num < len(perguntas):
         return render_template("quiz.html",
@@ -64,16 +62,16 @@ def quiz():
 # Processar resposta
 @app.route("/responder", methods=["POST"])
 def responder():
-    num = int(request.form["num"]) - 1  # Ajuste para o índice correto
+    num = int(request.form["num"]) - 1
     resposta = request.form["resposta"]
-    nome = request.form["nome"]
-    pontos = int(request.args.get("pontos", 0))  # Garantir que pontos seja um valor inteiro
+    nome = request.form["nome"]  # Corrigido: vem do formulário
+    pontos = int(request.args.get("pontos", 0))
 
-    # Verifique se a resposta está correta
-    correta = respostas_corretas[num]  # Obtemos a resposta correta
-    
+    pergunta = perguntas[num]
+    correta = pergunta[5]
+
     if resposta == correta:
-        pontos += 1  # Incrementa a pontuação se a resposta estiver correta
+        pontos += 1
 
     return redirect(url_for("quiz", nome=nome, num=num + 1, pontos=pontos))
 
