@@ -11,21 +11,53 @@ def criar_tabela():
     CREATE TABLE IF NOT EXISTS ranking (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
-        pontos INTEGER NOT NULL DEFAULT 0
+        pontuacao INTEGER NOT NULL DEFAULT 0  -- Garantindo que 'pontuacao' seja a coluna
     )
     """)
     conn.commit()
     conn.close()
 
-# Função para adicionar a coluna 'pontos' caso não exista
-def adicionar_coluna_pontos():
+# Função para adicionar a coluna 'pontuacao' caso não exista
+def adicionar_coluna_pontuacao():
     conn = sqlite3.connect("quiz.db")
     cursor = conn.cursor()
     try:
-        cursor.execute("ALTER TABLE ranking ADD COLUMN pontos INTEGER DEFAULT 0")
+        cursor.execute("ALTER TABLE ranking ADD COLUMN pontuacao INTEGER DEFAULT 0")
         conn.commit()
     except sqlite3.OperationalError:
         pass  # A coluna já existe ou não precisa ser alterada
+    conn.close()
+
+# Função para corrigir a tabela do banco de dados (renomeando e corrigindo a coluna 'pontuacao')
+def corrigir_tabela():
+    conn = sqlite3.connect("quiz.db")
+    cursor = conn.cursor()
+
+    # Tentando adicionar a coluna 'pontuacao' caso não exista
+    try:
+        cursor.execute("ALTER TABLE ranking ADD COLUMN pontuacao INTEGER DEFAULT 0")
+        conn.commit()
+    except sqlite3.OperationalError:
+        pass  # Caso a coluna já exista, ignoramos o erro
+
+    # Criando uma nova tabela, caso o banco tenha alguma incompatibilidade
+    cursor.execute("PRAGMA foreign_keys=off;")  # Desabilita temporariamente as chaves estrangeiras
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS ranking_new (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            pontuacao INTEGER NOT NULL DEFAULT 0
+        )
+    """)
+    cursor.execute("""
+        INSERT INTO ranking_new (id, nome, pontuacao)
+        SELECT id, nome, COALESCE(pontuacao, 0) FROM ranking
+    """)
+    cursor.execute("DROP TABLE ranking;")
+    cursor.execute("ALTER TABLE ranking_new RENAME TO ranking;")
+    cursor.execute("PRAGMA foreign_keys=on;")  # Habilita novamente as chaves estrangeiras
+
+    conn.commit()
     conn.close()
 
 # Perguntas fixas (10 perguntas completas)
@@ -100,11 +132,11 @@ def resultado():
     # Salvar no ranking
     conn = sqlite3.connect("quiz.db")
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO ranking (nome, pontos) VALUES (?, ?)", (nome, pontos))
+    cursor.execute("INSERT INTO ranking (nome, pontuacao) VALUES (?, ?)", (nome, pontos))  # Corrigido o nome da coluna
     conn.commit()
 
     # Top 10
-    cursor.execute("SELECT nome, pontos FROM ranking ORDER BY pontos DESC, id ASC LIMIT 10")
+    cursor.execute("SELECT nome, pontuacao FROM ranking ORDER BY pontuacao DESC, id ASC LIMIT 10")  # Corrigido o nome da coluna
     ranking = cursor.fetchall()
     conn.close()
 
@@ -114,7 +146,10 @@ def resultado():
 
 # Inicializa o banco ao importar o app
 criar_tabela()
-adicionar_coluna_pontos()
+adicionar_coluna_pontuacao()
+
+# Corrigir tabela caso seja necessário
+corrigir_tabela()
 
 # Roda o app localmente
 if __name__ == "__main__":
