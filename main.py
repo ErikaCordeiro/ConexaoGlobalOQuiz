@@ -11,7 +11,7 @@ def criar_tabela():
     CREATE TABLE IF NOT EXISTS ranking (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
-        pontos INTEGER NOT NULL
+        pontos INTEGER NOT NULL DEFAULT 0
     )
     """)
     conn.commit()
@@ -22,10 +22,10 @@ def adicionar_coluna_pontos():
     conn = sqlite3.connect("quiz.db")
     cursor = conn.cursor()
     try:
-        cursor.execute("ALTER TABLE ranking ADD COLUMN pontos INTEGER")
+        cursor.execute("ALTER TABLE ranking ADD COLUMN pontos INTEGER DEFAULT 0")
         conn.commit()
     except sqlite3.OperationalError:
-        pass  # A coluna já existe
+        pass  # A coluna já existe ou não precisa ser alterada
     conn.close()
 
 # Perguntas fixas (10 perguntas completas)
@@ -61,7 +61,7 @@ def iniciar_quiz():
 def quiz():
     nome = request.args.get("nome")
     num = int(request.args.get("num"))
-    pontos = int(request.args.get("pontos"))
+    pontos = int(request.args.get("pontos", 0))  # Garantir que pontos sempre seja um valor inteiro
 
     if num < len(perguntas):
         return render_template("quiz.html",
@@ -78,7 +78,7 @@ def responder():
     num = int(request.form["num"]) - 1  # Ajuste para o índice correto
     resposta = request.form["resposta"]
     nome = request.form["nome"]
-    pontos = int(request.args.get("pontos", 0))
+    pontos = int(request.args.get("pontos", 0))  # Garantir que pontos sempre seja um valor inteiro
 
     correta = respostas_corretas[num]  # Obtemos a resposta correta
 
@@ -91,7 +91,11 @@ def responder():
 @app.route("/resultado")
 def resultado():
     nome = request.args.get("nome")
-    pontos = int(request.args.get("pontos"))
+    pontos = int(request.args.get("pontos", 0))  # Garantir que o valor de pontos seja válido
+
+    # Verificar se a variável pontos está corretamente definida
+    if pontos is None:
+        pontos = 0  # Se for None, atribuímos 0 (valor padrão)
 
     # Salvar no ranking
     conn = sqlite3.connect("quiz.db")
